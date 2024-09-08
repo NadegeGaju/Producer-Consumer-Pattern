@@ -7,33 +7,31 @@ public class BasicProducerConsumer {
     private static final int MAX_SIZE = 10;
     private final Queue<Integer> buffer = new LinkedList<>();
 
-    // Producer method
     public synchronized void produce(int item) {
         try {
             while (buffer.size() == MAX_SIZE) {
-                wait(); // Wait until there's space in the buffer
+                wait();
             }
             buffer.add(item);
             System.out.println("Produced: " + item);
-            notifyAll(); // Notify consumers that there's a new item
+            notifyAll();
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Re-interrupt the thread
+            Thread.currentThread().interrupt();
             System.err.println("Producer thread interrupted: " + e.getMessage());
         }
     }
 
-    // Consumer method
     public synchronized int consume() {
         try {
             while (buffer.isEmpty()) {
-                wait(); // Wait until there's something to consume
+                wait();
             }
             int item = buffer.poll();
             System.out.println("Consumed: " + item);
-            notifyAll(); // Notify producers that there's space in the buffer
+            notifyAll();
             return item;
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Re-interrupt the thread
+            Thread.currentThread().interrupt();
             System.err.println("Consumer thread interrupted: " + e.getMessage());
             return -1;
         }
@@ -46,7 +44,7 @@ public class BasicProducerConsumer {
             for (int i = 0; i < 20; i++) {
                 pc.produce(i);
                 try {
-                    Thread.sleep(50); // Simulate production time
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -57,17 +55,15 @@ public class BasicProducerConsumer {
             for (int i = 0; i < 20; i++) {
                 pc.consume();
                 try {
-                    Thread.sleep(60); // Simulate consumption time
+                    Thread.sleep(60);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         };
 
-        // Measure performance
         long startTime = System.currentTimeMillis();
 
-        // Create multiple producers and consumers
         Thread producer1 = new Thread(producerTask);
         Thread producer2 = new Thread(producerTask);
         Thread consumer1 = new Thread(consumerTask);

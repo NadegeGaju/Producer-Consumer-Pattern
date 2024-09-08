@@ -7,15 +7,14 @@ public class BlockingQueueProducerConsumer {
     private static final int CAPACITY = 10;
     private final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(CAPACITY);
 
-    // Producer method
     public void produce(int item) throws InterruptedException {
-        queue.put(item); // Automatically blocks if the queue is full
+        queue.put(item);
         System.out.println("Produced: " + item);
     }
 
     // Consumer method
     public void consume() throws InterruptedException {
-        int item = queue.take(); // Automatically blocks if the queue is empty
+        int item = queue.take();
         System.out.println("Consumed: " + item);
     }
 
@@ -26,7 +25,7 @@ public class BlockingQueueProducerConsumer {
             try {
                 for (int i = 0; i < 20; i++) {
                     pc.produce(i);
-                    Thread.sleep(50); // Simulate production time
+                    Thread.sleep(50);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -37,17 +36,15 @@ public class BlockingQueueProducerConsumer {
             try {
                 for (int i = 0; i < 20; i++) {
                     pc.consume();
-                    Thread.sleep(60); // Simulate consumption time
+                    Thread.sleep(60);
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         };
 
-        // Measure performance
         long startTime = System.currentTimeMillis();
 
-        // Create multiple producers and consumers
         Thread producer1 = new Thread(producerTask);
         Thread producer2 = new Thread(producerTask);
         Thread consumer1 = new Thread(consumerTask);
